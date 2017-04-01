@@ -3,7 +3,13 @@
  *
  * Copyright © 2014 David Bushell | BSD & MIT license | https://github.com/dbushell/Pikaday
  */
-
+ (function(){
+    var cssText="@charset 'UTF-8';  /*!  * Pikaday  * Copyright © 2014 David Bushell | BSD & MIT license | http://dbushell.com/  */  .pika-single {     z-index: 9999;     display: block;     position: relative;     color: #333;     background: #fff;     border: 1px solid #ccc;     border-bottom-color: #bbb;     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }  /* clear child float (pika-lendar), using the famous micro clearfix hack http://nicolasgallagher.com/micro-clearfix-hack/ */ .pika-single:before, .pika-single:after {     content: ' ';     display: table; } .pika-single:after { clear: both } .pika-single { *zoom: 1 }  .pika-single.is-hidden {     display: none; }  .pika-single.is-bound {     position: absolute;     box-shadow: 0 5px 15px -5px rgba(0,0,0,.5); }  .pika-lendar {     float: left;     width: 240px;     margin: 8px; }  .pika-title {     position: relative;     text-align: center; }  .pika-label {     display: inline-block;     *display: inline;     position: relative;     z-index: 9999;     overflow: hidden;     margin: 0;     padding: 5px 3px;     font-size: 14px;     line-height: 20px;     font-weight: bold;     background-color: #fff; } .pika-title select {     cursor: pointer;     position: absolute;     z-index: 9998;     margin: 0;     left: 0;     top: 5px;     filter: alpha(opacity=0);     opacity: 0; }  .pika-prev, .pika-next {     display: block;     cursor: pointer;     position: relative;     outline: none;     border: 0;     padding: 0;     width: 20px;     height: 30px;     /* hide text using text-indent trick, using width value (it's enough) */     text-indent: 20px;     white-space: nowrap;     overflow: hidden;     background-color: transparent;     background-position: center center;     background-repeat: no-repeat;     background-size: 75% 75%;     opacity: .5;     *position: absolute;     *top: 0; }  .pika-prev:hover, .pika-next:hover {     opacity: 1; }  .pika-prev, .is-rtl .pika-next {     float: left;     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');     *left: 0; }  .pika-next, .is-rtl .pika-prev {     float: right;     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=');     *right: 0; }  .pika-prev.is-disabled, .pika-next.is-disabled {     cursor: default;     opacity: .2; }  .pika-select {     display: inline-block;     *display: inline; }  .pika-table {     width: 100%;     border-collapse: collapse;     border-spacing: 0;     border: 0; }  .pika-table th, .pika-table td {     width: 14.285714285714286%;     padding: 0; }  .pika-table th {     color: #999;     font-size: 12px;     line-height: 25px;     font-weight: bold;     text-align: center; }  .pika-button {     cursor: pointer;     display: block;     box-sizing: border-box;     -moz-box-sizing: border-box;     outline: none;     border: 0;     margin: 0;     width: 100%;     padding: 5px;     color: #666;     font-size: 12px;     line-height: 15px;     text-align: right;     background: #f5f5f5; }  .pika-week {     font-size: 11px;     color: #999; }  .is-today .pika-button {     color: #33aaff;     font-weight: bold; }  .is-selected .pika-button, .has-event .pika-button {     color: #fff;     font-weight: bold;     background: #33aaff;     box-shadow: inset 0 1px 3px #178fe5;     border-radius: 3px; }  .has-event .pika-button {     background: #005da9;     box-shadow: inset 0 1px 3px #0076c9; }  .is-disabled .pika-button, .is-inrange .pika-button {     background: #D5E9F7; }  .is-startrange .pika-button {     color: #fff;     background: #6CB31D;     box-shadow: none;     border-radius: 3px; }  .is-endrange .pika-button {     color: #fff;     background: #33aaff;     box-shadow: none;     border-radius: 3px; }  .is-disabled .pika-button, .is-outside-current-month .pika-button {     pointer-events: none;     cursor: default;     color: #999;     opacity: .3; }  .pika-button:hover, .pika-row.pick-whole-week:hover .pika-button {     color: #fff;     background: #ff8000;     box-shadow: none;     border-radius: 3px; }  /* styling for abbr */ .pika-table abbr {     border-bottom: none;     cursor: help; }  .pika-time-container {     clear: both; }  .pika-time {     margin: 7px auto 7px; }  .pika-time .pika-time-label {     font-weight: bold;     font-size: 11px;     color: #666;     padding-right: 0.33em; }";
+    var style=document.createElement("style");
+    style.setAttribute("type","text/css");
+    style.appendChild(document.createTextNode(cssText));
+    document.getElementsByTagName("head")[0].appendChild(style);
+})();
 (function (root, factory)
 {
     'use strict';
@@ -242,6 +248,19 @@
         // how many months are visible
         numberOfMonths: 1,
 
+        // time
+        showTime: true,
+        showMinutes: true,
+        showSeconds: true,
+        use24hour: true,
+        incrementHourBy: 1,
+        incrementMinuteBy: 1,
+        incrementSecondBy: 1,
+        timeLabel: null,
+
+        // option to prevent calendar from auto-closing after date is selected
+        autoClose: true,
+
         // when numberOfMonths is used, this will help you to choose where the main calendar will be (default `left`, can be set to `right`)
         // only used for the first display or when a selected date is not visible
         mainCalendar: 'left',
@@ -422,6 +441,50 @@
         return '<table cellpadding="0" cellspacing="0" class="pika-table" role="grid" aria-labelledby="' + randId + '">' + renderHead(opts) + renderBody(data) + '</table>';
     },
 
+    renderTimePicker = function(num_options, selected_val, select_class, display_func, increment_by) {
+        increment_by = increment_by || 1;
+        var to_return = '<td><select class="pika-select '+select_class+'">';
+        for (var i = 0; i < num_options; i += increment_by) {
+            to_return += '<option value="'+i+'" '+(i==selected_val ? 'selected' : '')+'>'+display_func(i)+'</option>'
+        }
+        to_return += '</select></td>';
+        return to_return;
+    },
+
+    renderTime = function(hh, mm, ss, opts)
+    {
+        var to_return = '<table cellpadding="0" cellspacing="0" class="pika-time"><tbody><tr>' +
+            (opts.timeLabel !== null ? '<td class="pika-time-label">'+opts.timeLabel+'</td>' : '') +
+            renderTimePicker(24, hh, 'pika-select-hour', function(i) {
+                if (opts.use24hour) {
+                    return i<10?'0'+i:i;
+                } else {
+                    var to_return = (i%12) + (i<12 ? ' AM' : ' PM');
+                    return to_return;
+                    if (to_return == '0 AM') {
+                        return opts.i18n.midnight;
+                    } else if (to_return == '0 PM') {
+                        return opts.i18n.noon;
+                    } else {
+                        return to_return;
+                    }
+                }
+            },
+            opts.incrementHourBy);
+
+        if (opts.showMinutes) {
+          to_return += '<td>:</td>' +
+              renderTimePicker(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i }, opts.incrementMinuteBy);
+        }
+
+        if (opts.showSeconds) {
+            to_return += '<td>:</td>' +
+                renderTimePicker(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i }, opts.incrementSecondBy);
+        }
+        return to_return + '</tr></tbody></table>';
+    },
+
+
 
     /**
      * Pikaday constructor
@@ -444,10 +507,26 @@
 
             if (!hasClass(target, 'is-disabled')) {
                 if (hasClass(target, 'pika-button') && !hasClass(target, 'is-empty') && !hasClass(target.parentNode, 'is-disabled')) {
-                    self.setDate(new Date(target.getAttribute('data-pika-year'), target.getAttribute('data-pika-month'), target.getAttribute('data-pika-day')));
+                    var newDate = new Date(
+                            target.getAttribute('data-pika-year'),
+                            target.getAttribute('data-pika-month'),
+                            target.getAttribute('data-pika-day')
+                        );
+                    // Preserve time selection when date changed
+                    var prevDate = self._d || opts.defaultDate;
+                    if (prevDate && isDate(prevDate) && opts.showTime) {
+                        newDate.setHours(prevDate.getHours());
+                        newDate.setMinutes(prevDate.getMinutes());
+                        if (opts.showSeconds) {
+                            newDate.setSeconds(prevDate.getSeconds());
+                        }
+                    }
+                    self.setDate(newDate);
                     if (opts.bound) {
                         sto(function() {
-                            self.hide();
+                            if (opts.autoClose) {
+                                self.hide();
+                            }
                             if (opts.blurFieldOnSelect && opts.field) {
                                 opts.field.blur();
                             }
@@ -486,6 +565,15 @@
             }
             else if (hasClass(target, 'pika-select-year')) {
                 self.gotoYear(target.value);
+            }
+            else if (hasClass(target, 'pika-select-hour')) {
+                self.setTime(target.value);
+            }
+            else if (hasClass(target, 'pika-select-minute')) {
+                self.setTime(null, target.value);
+            }
+            else if (hasClass(target, 'pika-select-second')) {
+                self.setTime(null, null, target.value);
             }
         };
 
@@ -562,7 +650,7 @@
             }
             while ((pEl = pEl.parentNode));
 
-            if (!self._c) {
+            if (opts.autoClose && !self._c) {
                 self._b = sto(function() {
                     self.hide();
                 }, 50);
@@ -585,7 +673,8 @@
                 }
             }
             do {
-                if (hasClass(pEl, 'pika-single') || pEl === opts.trigger) {
+                if (hasClass(pEl, 'pika-single') || pEl === opts.trigger ||
+                    (opts.showTime && hasClass(pEl, 'pika-time-container'))) {
                     return;
                 }
             }
@@ -666,6 +755,8 @@
 
             opts.isRTL = !!opts.isRTL;
 
+            opts.autoClose = !!opts.autoClose;
+
             opts.field = (opts.field && opts.field.nodeName) ? opts.field : null;
 
             opts.theme = (typeof opts.theme) === 'string' && opts.theme ? opts.theme : null;
@@ -708,6 +799,15 @@
                 }
             }
 
+            // If no format is given, set based on showTime
+            if (opts.format === null) {
+                opts.format = 'YYYY-MM-DD';
+            }
+
+            if (opts.showTime) {
+            	opts.format += ' HH:mm:ss';
+            }
+
             return opts;
         },
 
@@ -716,7 +816,25 @@
          */
         toString: function(format)
         {
-            return !isDate(this._d) ? '' : hasMoment ? moment(this._d).format(format || this._o.format) : this._d.toDateString();
+            var formatDate=function (date, fmt) { //author: meizz 
+                var f=fmt;
+                var o = {
+                    "M+": date.getMonth() + 1, //月份 
+                    "D+": date.getDate(), //日 
+                    "H+": date.getHours(), //小时
+                    "h+": date.getHours()>=12?date.getHours()-12:date.getHours(), //小时
+                    "m+": date.getMinutes(), //分 
+                    "s+": date.getSeconds(), //秒 
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
+                    "S": date.getMilliseconds() //毫秒 
+                };
+                if (/(Y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear().toString()).substr(4 - RegExp.$1.length));
+                for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+                //console.log(date,fmt,f);
+                return fmt;
+            }
+            return !isDate(this._d) ? '' : hasMoment ? moment(this._d).format(format || this._o.format) : formatDate(this._d,format || this._o.format);
         },
 
         /**
@@ -738,11 +856,32 @@
         },
 
         /**
-         * return a Date object of the current selection
+         * return a Date object of the current selection with fallback for the current date
          */
         getDate: function()
         {
-            return isDate(this._d) ? new Date(this._d.getTime()) : null;
+            return isDate(this._d) ? new Date(this._d.getTime()) : new Date();
+        },
+
+        /**
+         * set time components
+         * Currently defaulting to setting date to today if not set
+         */
+        setTime: function(hours, minutes, seconds) {
+            if (!this._d) {
+                this._d = new Date();
+                this._d.setHours(0,0,0,0);
+            }
+            if (hours) {
+                this._d.setHours(hours);
+            }
+            if (minutes) {
+                this._d.setMinutes(minutes);
+            }
+            if (seconds) {
+                this._d.setSeconds(seconds);
+            }
+            this.setDate(this._d);
         },
 
         /**
@@ -777,7 +916,13 @@
             }
 
             this._d = new Date(date.getTime());
-            setToStartOfDay(this._d);
+
+            if (this._o.showTime && !this._o.showSeconds) {
+                this._d.setSeconds(0);
+            } else if (!this._o.showTime) {
+                setToStartOfDay(this._d);
+            }
+
             this.gotoDate(this._d);
 
             if (this._o.field) {
@@ -813,7 +958,10 @@
             if (newCalendar) {
                 this.calendars = [{
                     month: date.getMonth(),
-                    year: date.getFullYear()
+                    year: date.getFullYear(),
+                    hour: date.getHours(),
+                    minute: date.getMinutes(),
+                    second: date.getSeconds()
                 }];
                 if (this._o.mainCalendar === 'right') {
                     this.calendars[0].month += 1 - this._o.numberOfMonths;
@@ -903,7 +1051,7 @@
         setMinDate: function(value)
         {
             if(value instanceof Date) {
-                setToStartOfDay(value);
+                if (!this._o.showTime) setToStartOfDay(value);
                 this._o.minDate = value;
                 this._o.minYear  = value.getFullYear();
                 this._o.minMonth = value.getMonth();
@@ -913,7 +1061,6 @@
                 this._o.minMonth = defaults.minMonth;
                 this._o.startRange = defaults.startRange;
             }
-
             this.draw();
         },
 
@@ -923,7 +1070,7 @@
         setMaxDate: function(value)
         {
             if(value instanceof Date) {
-                setToStartOfDay(value);
+                if (!this._o.showTime) setToStartOfDay(value);
                 this._o.maxDate = value;
                 this._o.maxYear = value.getFullYear();
                 this._o.maxMonth = value.getMonth();
@@ -933,7 +1080,6 @@
                 this._o.maxMonth = defaults.maxMonth;
                 this._o.endRange = defaults.endRange;
             }
-
             this.draw();
         },
 
@@ -980,6 +1126,17 @@
 
             for (var c = 0; c < opts.numberOfMonths; c++) {
                 html += '<div class="pika-lendar">' + renderTitle(this, c, this.calendars[c].year, this.calendars[c].month, this.calendars[0].year, randId) + this.render(this.calendars[c].year, this.calendars[c].month, randId) + '</div>';
+            }
+
+            if (opts.showTime) {
+                var prevDate = this._d || this._o.defaultDate;
+                html += '<div class="pika-time-container">' +
+                        renderTime(
+                            prevDate && isDate(prevDate) ? prevDate.getHours() : 0,
+                            prevDate && isDate(prevDate) ? prevDate.getMinutes() : 0,
+                            prevDate && isDate(prevDate) ? prevDate.getSeconds() : 0,
+                            opts)
+                    + '</div>';
             }
 
             this.el.innerHTML = html;
@@ -1064,7 +1221,7 @@
                 before = new Date(year, month, 1).getDay(),
                 data   = [],
                 row    = [];
-            setToStartOfDay(now);
+            if (!opts.showTime) setToStartOfDay(now);
             if (opts.firstDay > 0) {
                 before -= opts.firstDay;
                 if (before < 0) {
@@ -1082,7 +1239,11 @@
                 after -= 7;
             }
             cells += 7 - after;
-            var isWeekSelected = false;
+	    var isWeekSelected = false;
+            // Ensure we only compare date portion when deciding to show a date in picker
+            var minDate_date = opts.minDate ? new Date(opts.minDate.getFullYear(), opts.minDate.getMonth(), opts.minDate.getDate()) : null;
+            var maxDate_date = opts.maxDate ? new Date(opts.maxDate.getFullYear(), opts.maxDate.getMonth(), opts.maxDate.getDate()) : null;
+
             for (var i = 0, r = 0; i < cells; i++)
             {
                 var day = new Date(year, month, 1 + (i - before)),
@@ -1096,8 +1257,8 @@
                     isStartRange = opts.startRange && compareDates(opts.startRange, day),
                     isEndRange = opts.endRange && compareDates(opts.endRange, day),
                     isInRange = opts.startRange && opts.endRange && opts.startRange < day && day < opts.endRange,
-                    isDisabled = (opts.minDate && day < opts.minDate) ||
-                                 (opts.maxDate && day > opts.maxDate) ||
+                    isDisabled = (minDate_date && day < minDate_date) ||
+                                 (maxDate_date && day > maxDate_date) ||
                                  (opts.disableWeekends && isWeekend(day)) ||
                                  (opts.disableDayFn && opts.disableDayFn(day));
 
