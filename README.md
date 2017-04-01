@@ -12,7 +12,7 @@ Pikaday
 * No dependencies (but plays well with [Moment.js][moment])
 * Modular CSS classes for easy styling
 
-[**Try Pikaday Demo →**][Pikaday]
+DEMO: [http://huangyifu.github.io/Pikaday/]
 
 ![Pikaday Screenshot][screenshot]
 
