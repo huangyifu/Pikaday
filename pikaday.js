@@ -123,6 +123,7 @@
 
     compareDates = function(a,b)
     {
+        return a.getFullYear()==b.getFullYear() && a.getMonth()==b.getMonth() && a.getDate()==b.getDate();
         // weak date comparison (use setToStartOfDay(date) to ensure correct result)
         return a.getTime() === b.getTime();
     },
