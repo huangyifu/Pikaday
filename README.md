@@ -12,7 +12,7 @@ Pikaday
 * No dependencies (but plays well with [Moment.js][moment])
 * Modular CSS classes for easy styling
 
-DEMO: [http://huangyifu.github.io/Pikaday-DatetimePicker/]
+DEMO: [http://huangyifu.github.io/Pikaday-datetimepicker/]
 
 ![Pikaday Screenshot][screenshot]
 
