@@ -516,7 +516,10 @@
     {
         var self = this,
             opts = self.config(options);
-
+        //
+        if(options.format==null && options.field.hasAttribute("format")){
+            opts.format=options.field.getAttribute("format");
+        }
         self._onMouseDown = function(e)
         {
             if (!self._v) {
@@ -847,16 +850,19 @@
             var formatDate=function (date, fmt) { //author: meizz 
                 var f=fmt;
                 var o = {
-                    "M+": date.getMonth() + 1, //月份 
-                    "D+": date.getDate(), //日 
-                    "H+": date.getHours(), //小时
-                    "h+": date.getHours()>=12?date.getHours()-12:date.getHours(), //小时
-                    "m+": date.getMinutes(), //分 
-                    "s+": date.getSeconds(), //秒 
-                    "q+": Math.floor((date.getMonth() + 3) / 3), //季度 
-                    "S": date.getMilliseconds() //毫秒 
+                    "M+": date.getMonth() + 1, //month 
+                    "D+": date.getDate(), //day 
+                    "d+": date.getDate(), //day
+                    "H+": date.getHours(), //hour
+                    "h+": date.getHours()>=12?date.getHours()-12:date.getHours(), //hour
+                    "m+": date.getMinutes(), //minute 
+                    "s+": date.getSeconds(), //second 
+                    "q+": Math.floor((date.getMonth() + 3) / 3), //Quarter 
+                    "S": date.getMilliseconds() //milli-second 
                 };
                 if (/(Y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear().toString()).substr(4 - RegExp.$1.length));
+                if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (date.getFullYear().toString()).substr(4 - RegExp.$1.length));
+
                 for (var k in o)
                 if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
                 //console.log(date,fmt,f);
