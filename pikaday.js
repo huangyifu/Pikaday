@@ -10,6 +10,8 @@
     style.appendChild(document.createTextNode(cssText));
     document.getElementsByTagName("head")[0].appendChild(style);
 })();
+
+
 (function (root, factory)
 {
     'use strict';
@@ -62,22 +64,6 @@
             el.removeEventListener(e, callback, !!capture);
         } else {
             el.detachEvent('on' + e, callback);
-        }
-    },
-
-    fireEvent = function(el, eventName, data)
-    {
-        var ev;
-
-        if (document.createEvent) {
-            ev = document.createEvent('HTMLEvents');
-            ev.initEvent(eventName, true, false);
-            ev = extend(ev, data);
-            el.dispatchEvent(ev);
-        } else if (document.createEventObject) {
-            ev = document.createEventObject();
-            ev = extend(ev, data);
-            el.fireEvent('on' + eventName, ev);
         }
     },
 
@@ -166,6 +152,22 @@
         return to;
     },
 
+    fireEvent = function(el, eventName, data)
+    {
+        var ev;
+
+        if (document.createEvent) {
+            ev = document.createEvent('HTMLEvents');
+            ev.initEvent(eventName, true, false);
+            ev = extend(ev, data);
+            el.dispatchEvent(ev);
+        } else if (document.createEventObject) {
+            ev = document.createEventObject();
+            ev = extend(ev, data);
+            el.fireEvent('on' + eventName, ev);
+        }
+    },
+
     adjustCalendar = function(calendar) {
         if (calendar.month < 0) {
             calendar.year -= Math.ceil(Math.abs(calendar.month)/12);
@@ -189,6 +191,9 @@
         // automatically show/hide the picker on `field` focus (default `true` if `field` is set)
         bound: undefined,
 
+        // data-attribute on the input field with an aria assistance tekst (only applied when `bound` is set)
+        ariaLabel: 'Use the arrow keys to pick a date',
+
         // position of the datepicker, relative to the field (default to bottom & left)
         // ('bottom' & 'left' keywords are not used, 'top' & 'right' are modifier on the bottom/left position)
         position: 'bottom left',
@@ -198,6 +203,13 @@
 
         // the default output format for `.toString()` and `field` value
         format: 'YYYY-MM-DD',
+
+        // the toString function which gets passed a current date object and format
+        // and returns a string
+        toString: null,
+
+        // used to create date object from current input string
+        parse: null,
 
         // the initial date to view when first opened
         defaultDate: null,
@@ -245,6 +257,9 @@
         // Render days of the calendar grid that fall in the next or previous month
         showDaysInNextAndPreviousMonths: false,
 
+        // Allows user to select days that fall in the next or previous month
+        enableSelectionDaysInNextAndPreviousMonths: false,
+
         // how many months are visible
         numberOfMonths: 1,
 
@@ -290,7 +305,10 @@
         onSelect: null,
         onOpen: null,
         onClose: null,
-        onDraw: null
+        onDraw: null,
+
+        // Enable keyboard input
+        keyboardInput: true
     },
 
 
@@ -313,6 +331,11 @@
         if (opts.isEmpty) {
             if (opts.showDaysInNextAndPreviousMonths) {
                 arr.push('is-outside-current-month');
+
+                if(!opts.enableSelectionDaysInNextAndPreviousMonths) {
+                    arr.push('is-selection-disabled');
+                }
+
             } else {
                 return '<td class="is-empty"></td>';
             }
@@ -473,12 +496,12 @@
             opts.incrementHourBy);
 
         if (opts.showMinutes) {
-          to_return += '<td>:</td>' +
+          to_return += '<th>:</th>' +
               renderTimePicker(60, mm, 'pika-select-minute', function(i) { if (i < 10) return "0" + i; return i }, opts.incrementMinuteBy);
         }
 
         if (opts.showSeconds) {
-            to_return += '<td>:</td>' +
+            to_return += '<th>:</th>' +
                 renderTimePicker(60, ss, 'pika-select-second', function(i) { if (i < 10) return "0" + i; return i }, opts.incrementSecondBy);
         }
         return to_return + '</tr></tbody></table>';
@@ -614,7 +637,9 @@
             if (e.firedBy === self) {
                 return;
             }
-            if (hasMoment) {
+            if (opts.parse) {
+                date = opts.parse(opts.field.value, opts.format);
+            } else if (hasMoment) {
                 date = moment(opts.field.value, opts.format, opts.formatStrict);
                 date = (date && date.isValid()) ? date.toDate() : null;
             }
@@ -690,7 +715,10 @@
         addEvent(self.el, 'mousedown', self._onMouseDown, true);
         addEvent(self.el, 'touchend', self._onMouseDown, true);
         addEvent(self.el, 'change', self._onChange);
-        addEvent(document, 'keydown', self._onKeyChange);
+
+        if (opts.keyboardInput) {
+            addEvent(document, 'keydown', self._onKeyChange);
+        }
 
         if (opts.field) {
             if (opts.container) {
@@ -984,14 +1012,6 @@
                 newDay = new Date(day.valueOf() - difference);
             }
 
-            if (hasMoment) {
-                if (sign === 'add') {
-                    newDay = moment(day).add(days, "days").toDate();
-                } else if (sign === 'subtract') {
-                    newDay = moment(day).subtract(days, "days").toDate();
-                }
-            }
-
             this.setDate(newDay);
         },
 
@@ -1155,7 +1175,7 @@
 
             if (opts.bound) {
                 // let the screen reader user know to use arrow keys
-                opts.field.setAttribute('aria-label', 'Use the arrow keys to pick a date');
+                opts.field.setAttribute('aria-label', opts.ariaLabel);
             }
         },
 
@@ -1286,7 +1306,8 @@
                         isStartRange: isStartRange,
                         isEndRange: isEndRange,
                         isInRange: isInRange,
-                        showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths
+                        showDaysInNextAndPreviousMonths: opts.showDaysInNextAndPreviousMonths,
+                        enableSelectionDaysInNextAndPreviousMonths: opts.enableSelectionDaysInNextAndPreviousMonths
                     };
 
                 if (opts.pickWholeWeek && isSelected) {
@@ -1318,11 +1339,11 @@
             if (!this.isVisible()) {
                 this._v = true;
                 this.draw();
+                removeClass(this.el, 'is-hidden');
                 if (this._o.bound) {
                     addEvent(document, 'click', this._onClick);
                     this.adjustPosition();
                 }
-                removeClass(this.el, 'is-hidden');
                 if (typeof this._o.onOpen === 'function') {
                     this._o.onOpen.call(this);
                 }
@@ -1352,16 +1373,21 @@
          */
         destroy: function()
         {
+            var opts = this._o;
+
             this.hide();
             removeEvent(this.el, 'mousedown', this._onMouseDown, true);
             removeEvent(this.el, 'touchend', this._onMouseDown, true);
             removeEvent(this.el, 'change', this._onChange);
-            if (this._o.field) {
-                removeEvent(this._o.field, 'change', this._onInputChange);
-                if (this._o.bound) {
-                    removeEvent(this._o.trigger, 'click', this._onInputClick);
-                    removeEvent(this._o.trigger, 'focus', this._onInputFocus);
-                    removeEvent(this._o.trigger, 'blur', this._onInputBlur);
+            if (opts.keyboardInput) {
+                removeEvent(document, 'keydown', this._onKeyChange);
+            }
+            if (opts.field) {
+                removeEvent(opts.field, 'change', this._onInputChange);
+                if (opts.bound) {
+                    removeEvent(opts.trigger, 'click', this._onInputClick);
+                    removeEvent(opts.trigger, 'focus', this._onInputFocus);
+                    removeEvent(opts.trigger, 'blur', this._onInputBlur);
                 }
             }
             if (this.el.parentNode) {
@@ -1372,5 +1398,4 @@
     };
 
     return Pikaday;
-
 }));
